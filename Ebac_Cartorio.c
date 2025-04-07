@@ -104,9 +104,22 @@ int main() {
     char c = 's';
     int opcao = 0;
     setlocale(LC_ALL, "Portuguese");
+    char senha[10] = "a";
 
-    do {
+    while (1) { // Loop para verificar a senha
+        system("cls");
         printf("Cartório da EBAC\n\n");
+        printf("Digite sua senha: ");
+        scanf("%s", senha);
+
+        if (strcmp(senha, "admin") == 0) {  // Corrigido para comparação correta de strings
+            break;  // Senha correta, entra no menu principal
+        } else {
+            printf("Senha errada, tente novamente\n");
+            system("pause");
+        }
+    }
+    do {
         printf("Escolha a opção desejada no menu\n\n");
         printf("\t1  - Registrar Nome\n");
         printf("\t2  - Consultar Nome\n");
@@ -123,8 +136,8 @@ int main() {
             case 3: deletar(); c = menu(c); system("cls"); break;
             case 4: printf("Você escolheu sair, até logo!\n"); return 0;
             default: printf("Essa opção não está disponível\n"); c = menu(c); system("cls"); break;
-        }
-    } while (c == 's');
+            }
+        } while (c == 's');
 
     return 0;
 }
