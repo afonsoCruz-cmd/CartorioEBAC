@@ -3,63 +3,55 @@
 #include <locale.h>
 #include <string.h>
 
-//Fiz uma função para adiconar a virgula quando escreve o arquivo
-int virgula(arquivo){
-    FILE *file;
-    file= fopen(arquivo, "a");
-    fprintf(file,",");
+// Função para adicionar dados ao arquivo
+void adicionar_dado(const char *arquivo, const char *dado) {
+    FILE *file = fopen(arquivo, "a");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+    fprintf(file, "%s,", dado);
     fclose(file);
 }
-//Função Registrar Usuario - O CPF e o ID
-int registrar(){
-    char arquivo[40];
-    char cpf[40];
-    char nome[40];
-    char sobrenome[40];
-    char cargo[40];
 
+// Função Registrar Usuario - O CPF e o ID
+void registrar() {
+    char arquivo[40], cpf[40], nome[40], sobrenome[40], cargo[40];
 
     printf("Você escolheu Registrar um nome\n");
+
+    // Coletando os dados
     printf("Digite o CPF a ser cadastrado: ");
     scanf("%s", cpf);
+    strcpy(arquivo, cpf); // Nome do arquivo é o CPF
 
-    strcpy(arquivo, cpf); //copia valor das strings
+    // Abrindo arquivo e escrevendo o CPF
+    FILE *file = fopen(arquivo, "w");
+    if (file == NULL) {
+        printf("Erro ao criar o arquivo!\n");
+        return;
+    }
+    fprintf(file, "%s,", cpf);
+    fclose(file);
 
-    FILE *file; //cria o arquivo
-    file = fopen(arquivo, "w"); //cria o arquivo
-    fprintf(file,cpf); // imprime o CPF no arquivo
-    fclose(file); //fecha arquivo
-    virgula(arquivo); // função virgula, para imprimir a virgula no arquivo
-
-    //file= fopen(arquivo, "a");
-    //fprintf(file,",");
-    //fclose(file);
-
+    // Coletando e adicionando o nome, sobrenome e cargo
     printf("Digite o nome a ser cadastrado: ");
     scanf("%s", nome);
-
-    file=fopen(arquivo,"a"); //"a" porque esta Atualizando
-    fprintf(file,nome);
-    fclose(file);
-    virgula(arquivo);
+    adicionar_dado(arquivo, nome);
 
     printf("Digite o sobrenome a ser cadastrado: ");
     scanf("%s", sobrenome);
-
-    file=fopen(arquivo,"a");
-    fprintf(file,sobrenome);
-    fclose(file);
-    virgula(arquivo);
+    adicionar_dado(arquivo, sobrenome);
 
     printf("Digite o cargo a ser cadastrado: ");
     scanf("%s", cargo);
+    adicionar_dado(arquivo, cargo);
 
-    file=fopen(arquivo,"a");
-    fprintf(file,cargo);
-    fclose(file);
+    printf("Cadastro concluído!\n");
 }
-//Função Consultar Usuario - O CPF e o ID
-int consultar(){
+
+// Função Consultar Usuario - O CPF e o ID
+void consultar() {
     char cpf[40];
     char conteudo[200];
 
@@ -67,36 +59,35 @@ int consultar(){
     printf("Digite o CPF a ser consultado: ");
     scanf("%s", cpf);
 
-    FILE *file;
-    file = fopen(cpf, "r");
-    //Caso nao seja possivel localizar, retorna informação ao usuario.
-    if(file == NULL){
-        printf("\nNao foi possivel localizar\n");
+    FILE *file = fopen(cpf, "r");
+    if (file == NULL) {
+        printf("\nNão foi possível localizar o CPF.\n");
+        return;
     }
-    //Tras as informações contidas na linha do arquivo, e imprime como um unico char.
-    while(fgets(conteudo, 200, file) != NULL){
-        printf("\n Essas são as informações do usuario: ");
-        printf("%s", conteudo);
-        printf("\n\n");
+
+    // Lê e imprime as informações contidas no arquivo
+    while (fgets(conteudo, 200, file) != NULL) {
+        printf("\nEssas são as informações do usuário: %s\n", conteudo);
     }
+    fclose(file);
 }
-//Função Deletar Usuario - O CPF e o ID
-int deletar(){
+
+// Função Deletar Usuario - O CPF e o ID
+void deletar() {
     char cpf[40];
 
     printf("Você escolheu Deletar um nome\n");
     printf("Digite o CPF a ser removido: ");
     scanf("%s", cpf);
-    remove(cpf);
 
-    FILE *file;
-    file = fopen(cpf, "r");
-    //Caso nao seja possivel localizar, retorna informação ao usuario.
-    if(file == NULL){
-        printf("\nNao foi possivel localizar\n");
+    if (remove(cpf) == 0) {
+        printf("Usuário removido com sucesso!\n");
+    } else {
+        printf("\nNão foi possível localizar o CPF para remoção.\n");
     }
 }
-//Função de retorno ao menu inicial, caso o usuario deseje.
+
+// Função de retorno ao menu inicial, caso o usuário deseje
 char menu(char c) {
     printf("\nDeseja voltar ao menu? (s/n): ");
     scanf(" %c", &c); // Lê o caractere e ignora espaços em branco e novas linhas
@@ -106,26 +97,28 @@ char menu(char c) {
 
 int main() {
     char c = 's'; // Inicializa c com 's' para entrar no loop
-    int opcao = 0; //Inicializa opção com 0;
-    setlocale(LC_ALL, "Portuguese"); //Linguagem para teclado em portugues
+    int opcao = 0; // Inicializa a opção com 0
+    setlocale(LC_ALL, "Portuguese"); // Linguagem para teclado em português
 
     do {
-        printf("Cartorio da EBAC \n  \n");
+        printf("Cartório da EBAC \n\n");
         printf("Escolha a opção desejada no menu\n\n");
         // Menu
-        printf("\t1  - Registar Nome \n");
+        printf("\t1  - Registrar Nome \n");
         printf("\t2  - Consultar Nome \n");
-        printf("\t3  - Deletar Nome \n\n");
+        printf("\t3  - Deletar Nome \n");
+        printf("\t4  - Sair \n\n");
+
         // Lê a opção
         printf("Opção: ");
-        scanf("%d", &opcao); //Le a entreda do Usuario (1,2,3) para seguir ao CASE.
-        while (getchar() != '\n'); // Limpa o buffer de entrada após ler a opção.
+        scanf("%d", &opcao); // Lê a entrada do Usuário (1,2,3) para seguir ao CASE
+        while (getchar() != '\n'); // Limpa o buffer de entrada após ler a opção
 
         switch (opcao) {
             case 1:
-                registrar(); //Chama a  função registar
-                c = menu(c); //Atribui a C, a opção de retorno ao menu (S,N) informado pelo usuario.
-                system("cls"); //Limpar a Tela.
+                registrar(); // Chama a função registrar
+                c = menu(c); // Atribui a c, a opção de retorno ao menu (S,N) informado pelo usuário
+                system("cls"); // Limpa a Tela (funciona no Windows)
                 break;
             case 2:
                 consultar();
@@ -137,6 +130,9 @@ int main() {
                 c = menu(c);
                 system("cls");
                 break;
+            case 4:
+                printf("Você escolheu sair, até logo!\n");
+                return 0;
             default:
                 printf("Essa opção não está disponível\n");
                 c = menu(c);
@@ -147,4 +143,3 @@ int main() {
 
     return 0; // Adiciona um retorno para a função main
 }
-
