@@ -20,34 +20,38 @@ void registrar() {
 
     printf("Você escolheu Registrar um nome\n");
 
-    // Coletando os dados
+    // Coletando CPF e Iniciando o arquivo
     printf("Digite o CPF a ser cadastrado: ");
     scanf("%s", cpf);
     strcpy(arquivo, cpf); // Nome do arquivo é o CPF
 
-    // Abrindo arquivo e escrevendo o CPF
-    FILE *file = fopen(arquivo, "w");
-    if (file == NULL) {
-        printf("Erro ao criar o arquivo!\n");
-        return;
-    }
-    fprintf(file, "%s,", cpf);
-    fclose(file);
+    //Tenta abrir o file com o numero de CPF, para saber se ja existe
+    //Caso ja exista este usuario cadastrado, retorna ao menu.
+    FILE *file;
+	file = fopen(cpf, "r");
 
-    // Coletando e adicionando o nome, sobrenome e cargo
-    printf("Digite o nome a ser cadastrado: ");
-    scanf("%s", nome);
-    adicionar_dado(arquivo, nome);
+    if(file == NULL){
 
-    printf("Digite o sobrenome a ser cadastrado: ");
-    scanf("%s", sobrenome);
-    adicionar_dado(arquivo, sobrenome);
+            //Chama a função adiconar dado com o CPF digitado acima
+            adicionar_dado(arquivo, cpf);//Adicionar CPF
 
-    printf("Digite o cargo a ser cadastrado: ");
-    scanf("%s", cargo);
-    adicionar_dado(arquivo, cargo);
+            // Coletando e adicionando o nome, sobrenome e cargo
+            printf("Digite o nome a ser cadastrado: ");
+            scanf("%s", nome);
+            adicionar_dado(arquivo, nome);
 
-    printf("Cadastro concluído!\n");
+            printf("Digite o sobrenome a ser cadastrado: ");
+            scanf("%s", sobrenome);
+            adicionar_dado(arquivo, sobrenome);
+
+            printf("Digite o cargo a ser cadastrado: ");
+            scanf("%s", cargo);
+            adicionar_dado(arquivo, cargo);
+
+            printf("Cadastro concluído!\n");
+    }else if(file!=NULL){
+        printf("Usuario ja cadastrado");
+        }
 }
 
 // Função Consultar Usuario - O CPF e o ID
@@ -61,10 +65,9 @@ void consultar() {
 
     FILE *file = fopen(cpf, "r");
     if (file == NULL) {
-        printf("\nNão foi possível localizar o CPF.\n");
-        return;
+        printf("\nNão foi possível localizar o CPF\n");
+        //return;
     }
-
     // Lê e imprime as informações contidas no arquivo
     while (fgets(conteudo, 200, file) != NULL) {
         printf("\nEssas são as informações do usuário: %s\n", conteudo);
