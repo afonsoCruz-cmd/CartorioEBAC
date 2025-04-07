@@ -3,13 +3,26 @@
 #include <locale.h>
 #include <string.h>
 
+// Função para abrir o arquivo
+FILE* abrir_arquivo(const char *arquivo, const char *modo) {
+    FILE *file = fopen(arquivo, modo);
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo: %s\n", arquivo);
+    }
+    return file;
+}
+
+// Função de retorno ao menu inicial, caso o usuário deseje
+char menu(char c) {
+    printf("\nDeseja voltar ao menu? (s/n): ");
+    scanf(" %c", &c); // Lê o caractere e ignora espaços em branco e novas linhas
+    while (getchar() != '\n'); // Limpa o buffer de entrada até encontrar uma nova linha
+    return c;
+}
+
 // Função para adicionar dados ao arquivo
 void adicionar_dado(const char *arquivo, const char *dado) {
-    FILE *file = fopen(arquivo, "a");
-    if (file == NULL) {
-        printf("Erro ao abrir o arquivo!\n");
-        return;
-    }
+    FILE *file = abrir_arquivo(arquivo, "a");
     fprintf(file, "%s,", dado);
     fclose(file);
 }
@@ -17,7 +30,6 @@ void adicionar_dado(const char *arquivo, const char *dado) {
 // Função Registrar Usuario - O CPF e o ID
 void registrar() {
     char arquivo[40], cpf[40], nome[40], sobrenome[40], cargo[40];
-
     printf("Você escolheu Registrar um nome\n");
 
     // Coletando CPF e Iniciando o arquivo
@@ -27,9 +39,7 @@ void registrar() {
 
     //Tenta abrir o file com o numero de CPF, para saber se ja existe
     //Caso ja exista este usuario cadastrado, retorna ao menu.
-    FILE *file;
-	file = fopen(cpf, "r");
-
+    FILE *file = fopen(cpf, "r");// aqui nao foi utlizado a função ABRIR_ARQUIVO, porque aqui o arquivo ser NULL não é necessario ser tratado como erro.
     if(file == NULL){
 
             //Chama a função adiconar dado com o CPF digitado acima
@@ -62,12 +72,8 @@ void consultar() {
     printf("Você escolheu Consultar um nome\n");
     printf("Digite o CPF a ser consultado: ");
     scanf("%s", cpf);
+    FILE *file = abrir_arquivo(cpf, "r");
 
-    FILE *file = fopen(cpf, "r");
-    if (file == NULL) {
-        printf("\nNão foi possível localizar o CPF\n");
-        //return;
-    }
     // Lê e imprime as informações contidas no arquivo
     while (fgets(conteudo, 200, file) != NULL) {
         printf("\nEssas são as informações do usuário: %s\n", conteudo);
@@ -86,16 +92,8 @@ void deletar() {
     if (remove(cpf) == 0) {
         printf("Usuário removido com sucesso!\n");
     } else {
-        printf("\nNão foi possível localizar o CPF para remoção.\n");
+        FILE *file = abrir_arquivo(cpf, "r");
     }
-}
-
-// Função de retorno ao menu inicial, caso o usuário deseje
-char menu(char c) {
-    printf("\nDeseja voltar ao menu? (s/n): ");
-    scanf(" %c", &c); // Lê o caractere e ignora espaços em branco e novas linhas
-    while (getchar() != '\n'); // Limpa o buffer de entrada até encontrar uma nova linha
-    return c;
 }
 
 int main() {
