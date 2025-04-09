@@ -14,9 +14,16 @@ FILE* abrir_arquivo(const char *arquivo, const char *modo) {
 
 // Função de retorno ao menu inicial, caso o usuário deseje
 char menu(char c) {
-    printf("\nDeseja voltar ao menu? (s/n): ");
-    scanf(" %c", &c); // Lê o caractere e ignora espaços em branco e novas linhas
-    while (getchar() != '\n'); // Limpa o buffer de entrada até encontrar uma nova linha
+    do {
+        printf("\nDeseja voltar ao menu? (s/n): ");
+        scanf(" %c", &c); // Lê o caractere e ignora espaços em branco e novas linhas
+        while (getchar() != '\n'); // Limpa o buffer de entrada até encontrar uma nova linha
+
+        if (c != 's' && c != 'n') {
+            printf("Entrada inválida. Por favor, digite 's' para sim ou 'n' para não.\n");
+        }
+    } while (c != 's' && c != 'n'); // Repete até o usuário inserir 's' ou 'n'
+
     return c;
 }
 
@@ -39,7 +46,7 @@ void registrar() {
     strncpy(arquivo, cpf, sizeof(arquivo) - 1);//Uso do strncpy para melhor segurança, nao vai haver estouro de buffer.
     arquivo[sizeof(arquivo) - 1] = '\0'; //Tratativa do strncpy, garantindo que a string vai caber no array.
 
-    FILE *file = fopen(arquivo, "r");
+    FILE *file = abrir_arquivo(arquivo, "r");
     if (file == NULL) {
         adicionar_dado(arquivo, cpf);
 

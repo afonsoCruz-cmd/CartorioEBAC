@@ -1,0 +1,118 @@
+Caderno de Testes para o Código em C
+Este caderno de testes visa fornecer um guia para verificar a funcionalidade do código C fornecido. Cada seção detalha um caso de teste específico, incluindo os passos para execução e os resultados esperados.
+
+Observações Importantes:
+
+Compile o código utilizando um compilador C (como GCC) antes de executar os testes.
+Certifique-se de que o diretório de execução do programa tenha permissões de leitura e escrita.
+Os arquivos de dados serão criados no mesmo diretório onde o programa é executado.
+
+1. Teste da Função abrir_arquivo
+Objetivo: Verificar se a função abrir_arquivo abre corretamente arquivos existentes e não existentes nos modos especificados.
+No caso do programa em C Cartorio Ebac, são feitas somente leituras (FILE *file = abrir_arquivo(cpf, "r")), e anexaçôes (FILE *file = abrir_arquivo(arquivo, "a")) nos arquivos.
+
+Casos de Teste:
+º Abrir arquivo inexistente com a função FILE *file = abrir_arquivo(cpf, "r") sem tratamento para arquivo NULL= OK, o arquivo foi criado e aberto.
+º Abrir arquivo inexistente com a função FILE *file = abrir_arquivo(cpf, "r") COM tratamento para arquivo NULL= OK, arquivo não foi criado devido  a tratativa caso arquivo seja NULL, o programa informa ao usuário do resultado NULL.
+º Abrir arquivo existente com a função FILE *file = abrir_arquivo(cpf, "r") = OK, o arquivo foi aberto. 
+
+Como Testar:
+Modifique a função main temporariamente para chamar abrir_arquivo com os diferentes casos de teste.
+Verifique a saída do programa e a existência/estado dos arquivos criados.
+
+
+2. Teste da Função menu
+Objetivo: Verificar se a função menu exibe a mensagem corretamente e lê a entrada do usuário ('s' ou 'n').
+
+Casos de Teste:
+º As mensagens de dialogo na função menu são apresentadas = OK, os printf são executados corretamente.
+º A função coleta do usuário entrada no teclado = OK, inclusive com tratativas de buffer.
+º É aguardado entra S ou N do usuário, caso o usuário forneça uma entrada invalida? = OK, a função menu tem tratativas para caso o usuário forneça entradas invalidas, executando um loop, onde se repete ate que uma entrada valida seja fornecida.
+º Com a entrada valida? = OK, a função menu recebe a entrada valida, sai do loop, e retorna o valor valido para a função MAIN.
+
+Como Testar:
+Modifique a função main temporariamente para chamar menu e imprimir o valor retornado.
+Execute o programa e forneça as diferentes entradas para verificar o retorno da função.
+
+
+3. Teste da Função adicionar_dado
+Objetivo: Verificar se a função adicionar_dado escreve a string fornecida no arquivo especificado, seguida de uma vírgula.
+
+Casos de Teste:
+º Anexação arquivo com a função FILE *file = abrir_arquivo(arquivo, "a") = OK, no programa a função adicionar dados só é utilizada após a abertura de um arquivo sendo nesta etapa anterior realizada todas as validações para arquivos NULL.
+
+Como Testar:
+Modifique a função main para chamar adicionar_dado com diferentes arquivos e dados.
+Após cada chamada, abra o arquivo especificado em um editor de texto para verificar seu conteúdo.
+
+
+4. Teste da Função registrar
+Objetivo: Verificar o fluxo de registro de um novo usuário, incluindo a criação do arquivo com o CPF e a adição dos dados. Também deve verificar o caso de tentativa de registrar um usuário já existente.
+
+Casos de Teste:
+º Entrada do CPF = OK, o  programa lê e adiciona a variável CPF o valor digitado pelo usuário.
+º A variável ARQUIVO recebe o valor de CPF = OK, é utilizada a função strncpy para melhor segurança e controle de buffer, inclusive sendo utilizado a tratativa arquivo[sizeof(arquivo) - 1] = '\0'; , garantindo que a string vai caber no array.
+º Verificação de CPF = OK, o programa verifica caso o usuário já esteja cadastrado, ao verificar se a variável FILE é NULL, caso não seja NULL quer dizer que o arquivo já existe, portanto já existe um usuário cadastrato com o cpf informado.
+º Caso o CPF não esteja cadastrado = OK, e iniciado o IF (file==NULL), parte do código com as diretrizes de cadastro.
+º Cadastro = OK, todas as mensagens de cadastro são mostradas com sucesso, o ARQUIVO(CPF) é criado com sucesso, todas as entradas são lidas pelo programa e adicionadas as suas respectivas variáveis, e em seguida escritas no arquivo criado ela função ADICONAR_DADO().
+º Ao final é mostrado ao usuário uma mensagem que o cadastro foi realizado com sucesso.
+
+Como Testar:
+Execute o programa e selecione a opção "1 - Registrar Nome".
+Para cada caso de teste, insira os dados solicitados.
+Verifique a criação dos arquivos com os nomes dos CPFs e seus respectivos conteúdos.
+Verifique as mensagens exibidas pelo programa.
+
+
+
+5. Teste da Função consultar
+Objetivo: Verificar se a função consultar busca e exibe corretamente os dados de um usuário cadastrado e se lida corretamente com CPFs não encontrados.
+
+Casos de Teste:
+º Entrada do CPF = OK, o  programa lê e adiciona a variável CPF o valor digitado pelo usuário.
+º Caso o CPF esteja cadastrado = OK, e iniciado o IF (file!=NULL), parte do código com as diretrizes de consulta.
+º Retorno das informações ao usuário = OK, o programa informa ao usuário imprimindo na tela, as informações contidas no arquivo.
+º Caso o CPF não esteja cadastrado = OK, e iniciado o ELSE da condição IF (file=!NULL), o programa informa ao usuário que o cpf não esta cadastrado no sistema.
+
+Como Testar:
+Execute o programa e selecione a opção "2 - Consultar Nome".
+Para cada caso de teste, insira o CPF a ser consultado.
+Verifique se as informações do usuário correto são exibidas ou se a mensagem de "Usuário não encontrado" aparece para CPFs inexistentes.
+
+
+6. Teste da Função deletar
+Objetivo: Verificar se a função deletar remove corretamente o arquivo associado ao CPF fornecido e se lida corretamente com CPFs não encontrados.
+
+Casos de Teste:
+º Entrada do CPF = OK, o  programa lê e adiciona a variável CPF o valor digitado pelo usuário.
+º Caso o CPF esteja cadastrado = OK, o código utiliza a  função remove(cpf), e remove o arquivo do computador e retorna mensagem confirmando ao usuário.
+º Caso o CPF não esteja cadastrado = OK, o programa retorna mensagem ao usuário informando que  o cpf não foi localizado.
+
+Como Testar:
+Execute o programa e selecione a opção "3 - Deletar Nome".
+Para cada caso de teste, insira o CPF a ser deletado.
+Verifique se os arquivos correspondentes são removidos do sistema de arquivos e se as mensagens de sucesso ou erro são exibidas corretamente.
+
+
+7. Teste da Função main (Fluxo Principal e Senha)
+Objetivo: Verificar o fluxo geral do programa, incluindo a autenticação por senha e a navegação no menu.
+
+Casos de Teste:
+º Iniciação  do programa = OK, o programa inicia corretamente e mostra as mensagens solicitando ao usuarioa a senha  de acesso de ADMIN.
+º Senha de Admin incorreta = OK, o programa detecta a senha incorreta, informa ao usuário e retorna para solicitar a senha novamente.
+º Senha Admin correta = OK, o programa recebe a senha correta, e da continuidade ao código.
+º Apresentação do Menu = OK, o programa entra em um lado Do-While, garantindo que o laço seja executado ao menos uma vez, apresentando o menu e suas opções, que são de 1-4, o  programa também tem tratativas para opções invalidas, retornando ao menu.
+º Opção 1 Cadastro = OK, o programa chama a função REGISTRAR() corretamente,  atribuía a variável C o valor de retorno da função MENU(), limpa a tela.
+º Opção 2 Consulta = OK, o programa chama a função CONSULTA() corretamente,  atribuía a variável C o valor de retorno da função MENU(), limpa a tela.
+º Opção 3 Deletar = OK, o programa chama a função DELETAR() corretamente,  atribuía a variável C o valor de retorno da função MENU(), limpa a tela.
+º Opção 4 SAIR = OK, o programa informa ao usuário que selecionou sair do sistema, retorna 0(zero) para a MAIN(), encerra o programa.
+º Opção Default = OK, opção default foi utilizada para entradas invalidas, atribuía a variável C o valor de retorno da função MENU(), limpa a tela.
+
+Como Testar:
+Verificar se o programa inicia corretamente.
+Validar o sistema de autenticação por senha.
+Garantir que o menu principal é exibido após a autenticação bem-sucedida.
+Testar cada opção do menu e seu respectivo fluxo.
+Verificar se a opção de sair encerra o programa corretamente.
+Garantir que entradas inválidas no menu são tratadas adequadamente.
+Testar o loop de retorno ao menu principal.
